@@ -78,9 +78,9 @@ python3 devutils.py gitstats
 
 ## 🤝 Support
 
-If you find this tool useful, consider sponsoring:
+If you find this tool useful, consider buying me a coffee:
 
-[https://github.com/sponsors/Elemperor1](https://github.com/sponsors/Elemperor1)
+[☕ Buy me a coffee ($5)](https://paypal.me/JacobARudolph)
 
 ## 📄 License
 
