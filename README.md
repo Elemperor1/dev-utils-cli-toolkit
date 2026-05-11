@@ -6,6 +6,7 @@
     <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.6+-green.svg" alt="Python"></a>
     <img src="https://img.shields.io/badge/dependencies-0-brightgreen" alt="Zero Dependencies">
     <img src="https://img.shields.io/github/stars/Elemperor1/dev-utils-cli-toolkit?style=social" alt="Stars">
+    <img src="https://github.com/Elemperor1/dev-utils-cli-toolkit/actions/workflows/ci.yml/badge.svg" alt="CI">
   </p>
 </div>
 

@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Check help output
+      run: |
+        python3 devutils.py help
+        python3 devutils.py help | grep -q "Dev Utilities CLI Toolkit"
+
+    - name: Test organize (dry-run)
+      run: |
+        mkdir -p /tmp/test_org
+        touch /tmp/test_org/photo.jpg /tmp/test_org/doc.pdf /tmp/test_org/script.py
+        python3 devutils.py organize /tmp/test_org --dry-run
+
+    - name: Test dedupe
+      run: |
+        mkdir -p /tmp/test_dedup
+        echo "same content" > /tmp/test_dedup/file1.txt
+        echo "same content" > /tmp/test_dedup/file2.txt
+        echo "different" > /tmp/test_dedup/file3.txt
+        python3 devutils.py dedupe /tmp/test_dedup | grep -q "Found duplicate"
+
+    - name: Test rename
+      run: |
+        mkdir -p /tmp/test_ren
+        touch /tmp/test_ren/a.txt /tmp/test_ren/b.txt
+        python3 devutils.py rename /tmp/test_ren --prefix 'pre_' --dry-run
+
+    - name: Test that all commands run without error
+      run: |
+        python3 -c "
+import subprocess
+import sys
+
+cmds = [
+    ['python3', 'devutils.py', 'help'],
+    ['python3', 'devutils.py', 'organize', '/tmp', '--dry-run'],
+    ['python3', 'devutils.py', 'dedupe', '/tmp'],
+    ['python3', 'devutils.py', 'rename', '/tmp', '--dry-run'],
+]
+
+for cmd in cmds:
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        print(f'FAILED: {\" \".join(cmd)}')
+        print(result.stderr)
+        sys.exit(1)
+    print(f'OK: {\" \".join(cmd)}')
+print('All commands passed.')
+"
